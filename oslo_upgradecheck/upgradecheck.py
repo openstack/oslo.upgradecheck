@@ -25,9 +25,7 @@ from oslo_upgradecheck._i18n import _
 
 
 class UpgradeCheckCode(enum.IntEnum):
-    """These are the status codes for the nova-status upgrade check command
-    and internal check commands.
-    """
+    """Status codes for the upgrade check command"""
 
     # All upgrade readiness checks passed successfully and there is
     # nothing to do.
@@ -51,6 +49,7 @@ UPGRADE_CHECK_MSG_MAP = {
 
 class UpgradeCheckResult(object):
     """Class used for 'nova-status upgrade check' results.
+
     The 'code' attribute is an UpgradeCheckCode enum.
     The 'details' attribute is a translated message generally only used for
     checks that result in a warning or failure code. The details should provide
@@ -61,7 +60,6 @@ class UpgradeCheckResult(object):
         super(UpgradeCheckResult, self).__init__()
         self.code = code
         self.details = details
-
 
 
 class UpgradeCommands(object):

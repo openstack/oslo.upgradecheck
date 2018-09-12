@@ -29,5 +29,6 @@ _C = _translators.contextual_form
 # requires oslo.i18n >=2.1.0
 _P = _translators.plural_form
 
+
 def get_available_languages():
     return oslo_i18n.get_available_languages(DOMAIN)
