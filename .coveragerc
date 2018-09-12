@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = upgradecheck
+omit = upgradecheck/tests/*,upgradecheck/openstack/*
+
+[report]
+ignore_errors = True
