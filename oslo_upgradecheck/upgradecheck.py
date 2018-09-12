@@ -21,9 +21,7 @@ import enum
 from oslo_config import cfg
 import prettytable
 
-
-def _(s):
-    return s
+from oslo_upgradecheck._i18n import _
 
 
 class UpgradeCheckCode(enum.IntEnum):
