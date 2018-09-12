@@ -133,6 +133,14 @@ def _add_parsers(subparsers, check_callback):
 
 
 def main(check_callback):
+    """Simple implementation of main for upgrade checks
+
+    This can be used in upgrade check commands to provide the minimum
+    necessary parameter handling and logic.
+
+    :param check_callback: The check function from the concrete implementation
+                           of UpgradeCommands.
+    """
     add_parsers = functools.partial(_add_parsers,
                                     check_callback=check_callback)
     opt = cfg.SubCommandOpt('category', handler=add_parsers)
