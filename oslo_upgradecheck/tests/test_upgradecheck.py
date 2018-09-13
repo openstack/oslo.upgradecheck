@@ -56,6 +56,10 @@ class TestCommands(upgradecheck.UpgradeCommands):
                        )
 
 
+class SuccessCommands(TestCommands):
+    _upgrade_checks = ()
+
+
 class TestUpgradeCommands(base.BaseTestCase):
     def test_get_details(self):
         result = upgradecheck.UpgradeCheckResult(
@@ -73,17 +77,21 @@ class TestUpgradeCommands(base.BaseTestCase):
 
 
 class TestMain(base.BaseTestCase):
-    def test_main(self):
+    def _run_test(self, func, expected):
         mock_argv = ['test-status', 'upgrade', 'check']
         with mock.patch.object(sys, 'argv', mock_argv, create=True):
-            inst = TestCommands()
-            result = upgradecheck.main(inst.check)
-            self.assertEqual(upgradecheck.UpgradeCheckCode.FAILURE, result)
+            result = upgradecheck.main(func)
+            self.assertEqual(expected, result)
+
+    def test_main(self):
+        inst = TestCommands()
+        self._run_test(inst.check, upgradecheck.UpgradeCheckCode.FAILURE)
 
     def test_main_exception(self):
         def raises():
             raise Exception('test exception')
-        mock_argv = ['test-status', 'upgrade', 'check']
-        with mock.patch.object(sys, 'argv', mock_argv, create=True):
-            result = upgradecheck.main(raises)
-            self.assertEqual(255, result)
+        self._run_test(raises, 255)
+
+    def test_main_success(self):
+        inst = SuccessCommands()
+        self._run_test(inst.check, 0)
