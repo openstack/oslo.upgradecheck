@@ -19,6 +19,9 @@ test_upgradecheck
 Tests for `upgradecheck` module.
 """
 
+import sys
+
+import mock
 from oslotest import base
 
 from oslo_upgradecheck import upgradecheck
@@ -34,6 +37,25 @@ class TestUpgradeCheckResult(base.BaseTestCase):
         self.assertEqual('test details', result.details)
 
 
+class TestCommands(upgradecheck.UpgradeCommands):
+    def success(self):
+        return upgradecheck.UpgradeCheckResult(
+            upgradecheck.UpgradeCheckCode.SUCCESS, 'Always succeeds')
+
+    def warning(self):
+        return upgradecheck.UpgradeCheckResult(
+            upgradecheck.UpgradeCheckCode.WARNING, 'Always warns')
+
+    def failure(self):
+        return upgradecheck.UpgradeCheckResult(
+            upgradecheck.UpgradeCheckCode.FAILURE, 'Always fails')
+
+    _upgrade_checks = (('always succeeds', success),
+                       ('always warns', warning),
+                       ('always fails', failure),
+                       )
+
+
 class TestUpgradeCommands(base.BaseTestCase):
     def test_get_details(self):
         result = upgradecheck.UpgradeCheckResult(
@@ -43,3 +65,16 @@ class TestUpgradeCommands(base.BaseTestCase):
         details = upgrade_commands._get_details(result)
         wrapped = '*' * 60 + '\n  ' + '*' * 10
         self.assertEqual(wrapped, details)
+
+    def test_check(self):
+        inst = TestCommands()
+        result = inst.check()
+        self.assertEqual(upgradecheck.UpgradeCheckCode.FAILURE, result)
+
+
+class TestMain(base.BaseTestCase):
+    def test_main(self):
+        mock_argv = ['test-status', 'upgrade', 'check']
+        with mock.patch.object(sys, 'argv', mock_argv, create=True):
+            inst = TestCommands()
+            upgradecheck.main(inst.check)
