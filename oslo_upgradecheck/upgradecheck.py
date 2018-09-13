@@ -16,6 +16,7 @@
 import functools
 import sys
 import textwrap
+import traceback
 
 import enum
 from oslo_config import cfg
@@ -148,4 +149,9 @@ def main(check_callback):
     conf.register_cli_opt(opt)
     conf(sys.argv[1:])
 
-    return conf.category.action_fn()
+    try:
+        return conf.category.action_fn()
+    except Exception:
+        print(_('Error:\n%s') % traceback.format_exc())
+        # This is 255 so it's not confused with the upgrade check exit codes.
+        return 255

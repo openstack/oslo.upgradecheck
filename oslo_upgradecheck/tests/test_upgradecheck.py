@@ -79,3 +79,11 @@ class TestMain(base.BaseTestCase):
             inst = TestCommands()
             result = upgradecheck.main(inst.check)
             self.assertEqual(upgradecheck.UpgradeCheckCode.FAILURE, result)
+
+    def test_main_exception(self):
+        def raises():
+            raise Exception('test exception')
+        mock_argv = ['test-status', 'upgrade', 'check']
+        with mock.patch.object(sys, 'argv', mock_argv, create=True):
+            result = upgradecheck.main(raises)
+            self.assertEqual(255, result)
