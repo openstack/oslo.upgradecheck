@@ -4,9 +4,10 @@ oslo.upgradecheck
 
 Common code for writing OpenStack upgrade checks
 
-Please feel here a long description which must be at least 3 lines wrapped on
-80 cols, so that distribution package maintainers can use it in their packages.
-Note that this is a hard requirement.
+This project contains the common code necessary for writing upgrade checks
+in OpenStack projects. It includes a module (oslo_upgradecheck.upgradecheck)
+for the common code as well as an example (oslo_upgradecheck.__main__) of
+integrating that code into a project.
 
 * Free software: Apache license
 * Documentation: https://docs.openstack.org/oslo.upgradecheck/latest/
