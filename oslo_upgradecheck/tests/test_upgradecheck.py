@@ -21,8 +21,14 @@ Tests for `upgradecheck` module.
 
 from oslotest import base
 
+from oslo_upgradecheck import upgradecheck
 
-class TestUpgradecheck(base.BaseTestCase):
 
-    def test_something(self):
-        pass
+class TestUpgradeCheckResult(base.BaseTestCase):
+
+    def test_details(self):
+        result = upgradecheck.UpgradeCheckResult(
+            upgradecheck.UpgradeCheckCode.SUCCESS,
+            'test details')
+        self.assertEqual(0, result.code)
+        self.assertEqual('test details', result.details)

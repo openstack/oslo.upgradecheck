@@ -1,7 +1,7 @@
 [run]
 branch = True
-source = upgradecheck
-omit = upgradecheck/tests/*,upgradecheck/openstack/*
+source = oslo_upgradecheck
+omit = oslo_upgradecheck/tests/*
 
 [report]
 ignore_errors = True
