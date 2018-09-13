@@ -32,3 +32,14 @@ class TestUpgradeCheckResult(base.BaseTestCase):
             'test details')
         self.assertEqual(0, result.code)
         self.assertEqual('test details', result.details)
+
+
+class TestUpgradeCommands(base.BaseTestCase):
+    def test_get_details(self):
+        result = upgradecheck.UpgradeCheckResult(
+            upgradecheck.UpgradeCheckCode.SUCCESS,
+            '*' * 70)
+        upgrade_commands = upgradecheck.UpgradeCommands()
+        details = upgrade_commands._get_details(result)
+        wrapped = '*' * 60 + '\n  ' + '*' * 10
+        self.assertEqual(wrapped, details)
