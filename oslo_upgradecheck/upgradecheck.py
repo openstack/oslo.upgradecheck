@@ -148,4 +148,4 @@ def main(check_callback):
     conf.register_cli_opt(opt)
     conf(sys.argv[1:])
 
-    conf.category.action_fn()
+    return conf.category.action_fn()

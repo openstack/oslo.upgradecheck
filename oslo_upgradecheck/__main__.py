@@ -14,6 +14,8 @@
 
 """Example CLI command for running upgrade checks"""
 
+import sys
+
 from oslo_upgradecheck import upgradecheck
 
 
@@ -33,8 +35,8 @@ class Checks(upgradecheck.UpgradeCommands):
 
 def main():
     inst = Checks()
-    upgradecheck.main(inst.check)
+    return upgradecheck.main(inst.check)
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

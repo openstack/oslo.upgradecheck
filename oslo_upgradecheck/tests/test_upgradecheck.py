@@ -77,4 +77,5 @@ class TestMain(base.BaseTestCase):
         mock_argv = ['test-status', 'upgrade', 'check']
         with mock.patch.object(sys, 'argv', mock_argv, create=True):
             inst = TestCommands()
-            upgradecheck.main(inst.check)
+            result = upgradecheck.main(inst.check)
+            self.assertEqual(upgradecheck.UpgradeCheckCode.FAILURE, result)
