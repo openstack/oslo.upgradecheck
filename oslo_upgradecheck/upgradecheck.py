@@ -64,6 +64,12 @@ class UpgradeCheckResult(object):
 
 
 class UpgradeCommands(object):
+    """Base class for upgrade checks
+
+    This class should be inherited by a class in each project that provides
+    the actual checks. Those checks should be added to the _upgrade_checks
+    class member so that they are run when the ``check`` method is called.
+    """
     _upgrade_checks = ()
 
     def _get_details(self, upgrade_check_result):
