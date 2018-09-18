@@ -21,12 +21,11 @@ from oslo_upgradecheck import upgradecheck
 
 class Checks(upgradecheck.UpgradeCommands):
     def success(self):
-        return upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.SUCCESS, 'Always succeeds')
+        return upgradecheck.Result(upgradecheck.Code.SUCCESS,
+                                   'Always succeeds')
 
     def failure(self):
-        return upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.FAILURE, 'Always fails')
+        return upgradecheck.Result(upgradecheck.Code.FAILURE, 'Always fails')
 
     _upgrade_checks = (('always succeeds', success),
                        ('always fails', failure),

@@ -25,7 +25,7 @@ import prettytable
 from oslo_upgradecheck._i18n import _
 
 
-class UpgradeCheckCode(enum.IntEnum):
+class Code(enum.IntEnum):
     """Status codes for the upgrade check command"""
 
     # All upgrade readiness checks passed successfully and there is
@@ -42,23 +42,23 @@ class UpgradeCheckCode(enum.IntEnum):
 
 
 UPGRADE_CHECK_MSG_MAP = {
-    UpgradeCheckCode.SUCCESS: _('Success'),
-    UpgradeCheckCode.WARNING: _('Warning'),
-    UpgradeCheckCode.FAILURE: _('Failure'),
+    Code.SUCCESS: _('Success'),
+    Code.WARNING: _('Warning'),
+    Code.FAILURE: _('Failure'),
 }
 
 
-class UpgradeCheckResult(object):
+class Result(object):
     """Class used for 'nova-status upgrade check' results.
 
-    The 'code' attribute is an UpgradeCheckCode enum.
+    The 'code' attribute is a Code enum.
     The 'details' attribute is a translated message generally only used for
     checks that result in a warning or failure code. The details should provide
     information on what issue was discovered along with any remediation.
     """
 
     def __init__(self, code, details=None):
-        super(UpgradeCheckResult, self).__init__()
+        super(Result, self).__init__()
         self.code = code
         self.details = details
 
@@ -85,9 +85,9 @@ class UpgradeCommands(object):
         new code. These checks also require access to potentially all of the
         Nova databases (nova, nova_api, nova_api_cell0) and external services
         such as the placement API service.
-        :returns: UpgradeCheckCode
+        :returns: Code
         """
-        return_code = UpgradeCheckCode.SUCCESS
+        return_code = Code.SUCCESS
         # This is a list if 2-item tuples for the check name and it's results.
         check_results = []
         for name, func in self._upgrade_checks:

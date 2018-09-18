@@ -17,11 +17,11 @@ called. For example::
     class ProjectSpecificUpgradeCommands(upgradecheck.UpgradeCommands):
         def an_upgrade_check(self):
             if everything_is_awesome():
-                return upgradecheck.UpgradeCheckResult(
-                    upgradecheck.UpgradeCheckCode.SUCCESS, 'Success details')
+                return upgradecheck.Result(
+                    upgradecheck.Code.SUCCESS, 'Success details')
             else:
-                return upgradecheck.UpgradeCheckResult(
-                    upgradecheck.UpgradeCheckCode.FAILURE, 'Failure details')
+                return upgradecheck.Result(
+                    upgradecheck.Code.FAILURE, 'Failure details')
 
         _upgrade_checks = (('Awesome upgrade check', an_upgrade_check))
 
