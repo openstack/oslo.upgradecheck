@@ -16,6 +16,7 @@
 
 import sys
 
+from oslo_config import cfg
 from oslo_upgradecheck import upgradecheck
 
 
@@ -34,7 +35,7 @@ class Checks(upgradecheck.UpgradeCommands):
 
 def main():
     inst = Checks()
-    return upgradecheck.main(inst.check)
+    return upgradecheck.main(cfg.CONF, inst.check)
 
 
 if __name__ == '__main__':

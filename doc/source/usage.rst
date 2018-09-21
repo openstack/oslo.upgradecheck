@@ -29,15 +29,18 @@ oslo.upgradecheck also includes a basic implementation of command line argument
 handling that can be used to provide the minimum processing needed to implement
 a ``$SERVICE-status upgrade check`` command. To make use of it, write a method
 that creates an instance of the class created above, then pass that class's
-``check`` method into :func:`oslo_upgradecheck.upgradecheck.main`. For
-example::
+``check`` function into :func:`oslo_upgradecheck.upgradecheck.main`. The
+project's ConfigOpts instance must also be passed. In most projects this will
+just be cfg.CONF. For example::
+
+    from oslo_config import cfg
 
     def main():
         inst = ProjectSpecificUpgradeCommands()
-        return upgradecheck.main(inst.check)
+        return upgradecheck.main(cfg.CONF, inst.check)
 
 The entry point for the ``$SERVICE-status`` command should then point at this
-method.
+function.
 
 Alternatively, if a project has its own CLI code that it would prefer to reuse,
 it simply needs to ensure that the ``inst.check`` method is called when the

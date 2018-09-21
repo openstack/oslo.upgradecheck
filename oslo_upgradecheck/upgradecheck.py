@@ -139,21 +139,31 @@ def _add_parsers(subparsers, check_callback):
     upgrade_action.set_defaults(action_fn=check_callback)
 
 
-def main(check_callback):
+def _init_config(conf):
+    conf(sys.argv[1:])
+
+
+def main(conf, check_callback, config_callback=_init_config):
     """Simple implementation of main for upgrade checks
 
     This can be used in upgrade check commands to provide the minimum
     necessary parameter handling and logic.
 
+    :param conf: An oslo.confg ConfigOpts instance on which to register the
+                 upgrade check arguments.
     :param check_callback: The check function from the concrete implementation
                            of UpgradeCommands.
+    :param config_callback: A function that initializes the conf object.
+                            It must take a single argument that is the conf
+                            object to be initialized. The default
+                            implementation simply runs
+                            conf(sys.argv[1:])
     """
     add_parsers = functools.partial(_add_parsers,
                                     check_callback=check_callback)
     opt = cfg.SubCommandOpt('category', handler=add_parsers)
-    conf = cfg.ConfigOpts()
     conf.register_cli_opt(opt)
-    conf(sys.argv[1:])
+    config_callback(conf)
 
     try:
         return conf.category.action_fn()
