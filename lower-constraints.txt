@@ -3,3 +3,9 @@ oslo.config==5.2.0
 oslo.i18n==3.15.3
 enum34==1.0.4
 PrettyTable==0.7.1
+oslotest==1.5.1
+stestr==2.0.0
+oslosphinx==2.5.0
+sphinx==1.6.2
+reno==2.5.0
+openstackdocstheme==1.18.1
