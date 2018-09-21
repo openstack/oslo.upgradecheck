@@ -68,6 +68,11 @@ class UpgradeCommands(object):
     This class should be inherited by a class in each project that provides
     the actual checks. Those checks should be added to the _upgrade_checks
     class member so that they are run when the ``check`` method is called.
+
+    The subcommands here must not rely on the service object model since they
+    should be able to run on n-1 data. Any queries to the database should be
+    done through the sqlalchemy query language directly like the database
+    schema migrations.
     """
     _upgrade_checks = ()
 
@@ -81,9 +86,8 @@ class UpgradeCommands(object):
         """Performs checks to see if the deployment is ready for upgrade.
 
         These checks are expected to be run BEFORE services are restarted with
-        new code. These checks also require access to potentially all of the
-        Nova databases (nova, nova_api, nova_api_cell0) and external services
-        such as the placement API service.
+        new code.
+
         :returns: Code
         """
         return_code = Code.SUCCESS
