@@ -30,25 +30,21 @@ from oslo_upgradecheck import upgradecheck
 class TestUpgradeCheckResult(base.BaseTestCase):
 
     def test_details(self):
-        result = upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.SUCCESS,
-            'test details')
+        result = upgradecheck.Result(upgradecheck.Code.SUCCESS, 'test details')
         self.assertEqual(0, result.code)
         self.assertEqual('test details', result.details)
 
 
 class TestCommands(upgradecheck.UpgradeCommands):
     def success(self):
-        return upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.SUCCESS, 'Always succeeds')
+        return upgradecheck.Result(upgradecheck.Code.SUCCESS,
+                                   'Always succeeds')
 
     def warning(self):
-        return upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.WARNING, 'Always warns')
+        return upgradecheck.Result(upgradecheck.Code.WARNING, 'Always warns')
 
     def failure(self):
-        return upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.FAILURE, 'Always fails')
+        return upgradecheck.Result(upgradecheck.Code.FAILURE, 'Always fails')
 
     _upgrade_checks = (('always succeeds', success),
                        ('always warns', warning),
@@ -62,9 +58,7 @@ class SuccessCommands(TestCommands):
 
 class TestUpgradeCommands(base.BaseTestCase):
     def test_get_details(self):
-        result = upgradecheck.UpgradeCheckResult(
-            upgradecheck.UpgradeCheckCode.SUCCESS,
-            '*' * 70)
+        result = upgradecheck.Result(upgradecheck.Code.SUCCESS, '*' * 70)
         upgrade_commands = upgradecheck.UpgradeCommands()
         details = upgrade_commands._get_details(result)
         wrapped = '*' * 60 + '\n  ' + '*' * 10
@@ -73,7 +67,7 @@ class TestUpgradeCommands(base.BaseTestCase):
     def test_check(self):
         inst = TestCommands()
         result = inst.check()
-        self.assertEqual(upgradecheck.UpgradeCheckCode.FAILURE, result)
+        self.assertEqual(upgradecheck.Code.FAILURE, result)
 
 
 class TestMain(base.BaseTestCase):
@@ -85,7 +79,7 @@ class TestMain(base.BaseTestCase):
 
     def test_main(self):
         inst = TestCommands()
-        self._run_test(inst.check, upgradecheck.UpgradeCheckCode.FAILURE)
+        self._run_test(inst.check, upgradecheck.Code.FAILURE)
 
     def test_main_exception(self):
         def raises():
