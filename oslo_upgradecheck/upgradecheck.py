@@ -13,7 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import functools
 import sys
 import textwrap
 import traceback
@@ -133,17 +132,24 @@ class UpgradeCommands(object):
         return return_code
 
 
-def _add_parsers(subparsers, check_callback):
-    upgrade_action = subparsers.add_parser('upgrade')
-    upgrade_action.add_argument('check')
-    upgrade_action.set_defaults(action_fn=check_callback)
+def _register_cli_options(conf, upgrade_command):
+    """Set up the command line options.
+
+    Adds a subcommand to support 'upgrade check' on the command line.
+
+    """
+    def add_parsers(subparsers):
+        upgrade_action = subparsers.add_parser('upgrade')
+        upgrade_action.add_argument('check')
+        upgrade_action.set_defaults(action_fn=upgrade_command.check)
+
+    opt = cfg.SubCommandOpt('command', handler=add_parsers)
+    conf.register_cli_opt(opt)
 
 
-def _init_config(conf):
-    conf(sys.argv[1:])
-
-
-def main(conf, check_callback, config_callback=_init_config):
+def main(conf, project, upgrade_command,
+         argv=sys.argv[1:],
+         default_config_files=None):
     """Simple implementation of main for upgrade checks
 
     This can be used in upgrade check commands to provide the minimum
@@ -151,22 +157,27 @@ def main(conf, check_callback, config_callback=_init_config):
 
     :param conf: An oslo.confg ConfigOpts instance on which to register the
                  upgrade check arguments.
-    :param check_callback: The check function from the concrete implementation
-                           of UpgradeCommands.
-    :param config_callback: A function that initializes the conf object.
-                            It must take a single argument that is the conf
-                            object to be initialized. The default
-                            implementation simply runs
-                            conf(sys.argv[1:])
+    :param project: The name of the project, to be used as an argument
+                    to the oslo_config.ConfigOpts instance to find
+                    configuration files.
+    :param upgrade_command: The UpgradeCommands instance.
+    :param argv: The command line arguments to parse. Defaults to sys.argv[1:].
+    :param default_config_files: The configuration files to load. For projects
+                                 that use non-standard default locations for
+                                 the configuration files, use this to override
+                                 the search behavior in oslo.config.
+
     """
-    add_parsers = functools.partial(_add_parsers,
-                                    check_callback=check_callback)
-    opt = cfg.SubCommandOpt('category', handler=add_parsers)
-    conf.register_cli_opt(opt)
-    config_callback(conf)
+    _register_cli_options(conf, upgrade_command)
+
+    conf(
+        args=argv,
+        project=project,
+        default_config_files=default_config_files,
+    )
 
     try:
-        return conf.category.action_fn()
+        return conf.command.action_fn()
     except Exception:
         print(_('Error:\n%s') % traceback.format_exc())
         # This is 255 so it's not confused with the upgrade check exit codes.
