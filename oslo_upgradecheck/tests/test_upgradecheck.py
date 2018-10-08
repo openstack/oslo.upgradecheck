@@ -19,6 +19,10 @@ test_upgradecheck
 Tests for `upgradecheck` module.
 """
 
+import os.path
+import subprocess
+import sys
+
 import mock
 from oslo_config import cfg
 from oslotest import base
@@ -92,3 +96,14 @@ class TestMain(base.BaseTestCase):
     def test_main_success(self):
         inst = SuccessCommands()
         self._run_test(inst, 0)
+
+
+class TestExampleFile(base.BaseTestCase):
+    def test_example_main(self):
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            '../../doc/source/main.py')
+        # The example includes both a passing and failing test, which means the
+        # overall result is failure.
+        self.assertEqual(
+            upgradecheck.Code.FAILURE,
+            subprocess.call([sys.executable, path, 'upgrade', 'check']))

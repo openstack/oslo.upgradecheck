@@ -34,8 +34,11 @@ class Checks(upgradecheck.UpgradeCommands):
 
 
 def main():
-    inst = Checks()
-    return upgradecheck.main(cfg.CONF, inst.check)
+    return upgradecheck.main(
+        conf=cfg.CONF,
+        project='myprojectname',
+        upgrade_command=Checks(),
+    )
 
 
 if __name__ == '__main__':

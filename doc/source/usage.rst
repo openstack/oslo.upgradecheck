@@ -48,3 +48,10 @@ function.
 Alternatively, if a project has its own CLI code that it would prefer to reuse,
 it simply needs to ensure that the ``inst.check`` method is called when the
 ``upgrade check`` parameters are passed to the ``$SERVICE-status`` command.
+
+Example
+-------
+
+The following is a fully functional example of implementing a check command:
+
+.. literalinclude:: main.py
