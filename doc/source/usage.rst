@@ -36,8 +36,11 @@ just be cfg.CONF. For example::
     from oslo_config import cfg
 
     def main():
-        inst = ProjectSpecificUpgradeCommands()
-        return upgradecheck.main(cfg.CONF, inst.check)
+        return upgradecheck.main(
+            conf=cfg.CONF,
+            project='myprojectname',
+            upgrade_command=ProjectSpecificUpgradeCommands(),
+        )
 
 The entry point for the ``$SERVICE-status`` command should then point at this
 function.

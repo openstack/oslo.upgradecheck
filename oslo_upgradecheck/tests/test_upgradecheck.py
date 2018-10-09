@@ -19,8 +19,6 @@ test_upgradecheck
 Tests for `upgradecheck` module.
 """
 
-import sys
-
 import mock
 from oslo_config import cfg
 from oslotest import base
@@ -72,22 +70,25 @@ class TestUpgradeCommands(base.BaseTestCase):
 
 
 class TestMain(base.BaseTestCase):
-    def _run_test(self, func, expected):
-        mock_argv = ['test-status', 'upgrade', 'check']
+    def _run_test(self, upgrade_command, expected):
         conf = cfg.ConfigOpts()
-        with mock.patch.object(sys, 'argv', mock_argv, create=True):
-            result = upgradecheck.main(conf, func)
-            self.assertEqual(expected, result)
+        result = upgradecheck.main(
+            conf=conf,
+            project='oslo-upgradecheck-test',
+            upgrade_command=upgrade_command,
+            argv=['upgrade', 'check'],
+        )
+        self.assertEqual(expected, result)
 
     def test_main(self):
         inst = TestCommands()
-        self._run_test(inst.check, upgradecheck.Code.FAILURE)
+        self._run_test(inst, upgradecheck.Code.FAILURE)
 
     def test_main_exception(self):
-        def raises():
-            raise Exception('test exception')
+        raises = mock.Mock()
+        raises.check.side_effect = Exception('test exception')
         self._run_test(raises, 255)
 
     def test_main_success(self):
         inst = SuccessCommands()
-        self._run_test(inst.check, 0)
+        self._run_test(inst, 0)
