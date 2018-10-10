@@ -25,7 +25,7 @@ copyright = '2018, Oslo Contributors'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'oslosphinx'
+    'openstackdocstheme'
 ]
 
 # The master toctree document.
@@ -39,4 +39,11 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-# html_theme = 'oslosphinx'
+html_theme = 'openstackdocs'
+
+
+# -- Options for openstackdocstheme -------------------------------------------
+
+repository_name = 'openstack/oslo.upgradecheck'
+bug_project = 'oslo.upgradecheck'
+bug_tag = ''
