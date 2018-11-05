@@ -20,6 +20,7 @@ import traceback
 import enum
 from oslo_config import cfg
 import prettytable
+import six
 
 from oslo_upgradecheck._i18n import _
 
@@ -116,7 +117,11 @@ class UpgradeCommands(object):
         # | Details: There is no placement-api endpoint in the |
         # |          service catalog.                          |
         # +----------------------------------------------------+
-        t = prettytable.PrettyTable([_('Upgrade Check Results')],
+        # NOTE(bnemec): We use six.text_type on the translated string to
+        # force immediate translation if lazy translation is in use.
+        # See lp1801761 for details.
+        t = prettytable.PrettyTable([six.text_type(_('Upgrade Check Results'))
+                                     ],
                                     hrules=prettytable.ALL)
         t.align = 'l'
         for name, result in check_results:
