@@ -75,6 +75,7 @@ class UpgradeCommands(object):
     done through the sqlalchemy query language directly like the database
     schema migrations.
     """
+    display_title = _('Upgrade Check Results')
     _upgrade_checks = ()
 
     def _get_details(self, upgrade_check_result):
@@ -120,8 +121,7 @@ class UpgradeCommands(object):
         # NOTE(bnemec): We use six.text_type on the translated string to
         # force immediate translation if lazy translation is in use.
         # See lp1801761 for details.
-        t = prettytable.PrettyTable([six.text_type(_('Upgrade Check Results'))
-                                     ],
+        t = prettytable.PrettyTable([six.text_type(self.display_title)],
                                     hrules=prettytable.ALL)
         t.align = 'l'
         for name, result in check_results:
