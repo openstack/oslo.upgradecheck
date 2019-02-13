@@ -141,7 +141,7 @@ class UpgradeCommands(object):
         return return_code
 
 
-def _register_cli_options(conf, upgrade_command):
+def register_cli_options(conf, upgrade_command):
     """Set up the command line options.
 
     Adds a subcommand to support 'upgrade check' on the command line.
@@ -154,6 +154,16 @@ def _register_cli_options(conf, upgrade_command):
 
     opt = cfg.SubCommandOpt('command', handler=add_parsers)
     conf.register_cli_opt(opt)
+
+
+def run(conf):
+    """Run the requested command."""
+    try:
+        return conf.command.action_fn()
+    except Exception:
+        print(_('Error:\n%s') % traceback.format_exc())
+        # This is 255 so it's not confused with the upgrade check exit codes.
+        return 255
 
 
 def main(conf, project, upgrade_command,
@@ -177,7 +187,7 @@ def main(conf, project, upgrade_command,
                                  the search behavior in oslo.config.
 
     """
-    _register_cli_options(conf, upgrade_command)
+    register_cli_options(conf, upgrade_command)
 
     conf(
         args=argv,
@@ -185,9 +195,4 @@ def main(conf, project, upgrade_command,
         default_config_files=default_config_files,
     )
 
-    try:
-        return conf.command.action_fn()
-    except Exception:
-        print(_('Error:\n%s') % traceback.format_exc())
-        # This is 255 so it's not confused with the upgrade check exit codes.
-        return 255
+    return run(conf)
