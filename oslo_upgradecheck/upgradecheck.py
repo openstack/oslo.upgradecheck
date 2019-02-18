@@ -146,6 +146,9 @@ def register_cli_options(conf, upgrade_command):
 
     Adds a subcommand to support 'upgrade check' on the command line.
 
+    :param conf: An oslo.confg ConfigOpts instance on which to register the
+                 upgrade check arguments.
+    :param upgrade_command: The UpgradeCommands instance.
     """
     def add_parsers(subparsers):
         upgrade_action = subparsers.add_parser('upgrade')
@@ -157,7 +160,11 @@ def register_cli_options(conf, upgrade_command):
 
 
 def run(conf):
-    """Run the requested command."""
+    """Run the requested command.
+
+    :param conf: An oslo.confg ConfigOpts instance on which the upgrade
+                 commands have been previously registered.
+    """
     try:
         return conf.command.action_fn()
     except Exception:
