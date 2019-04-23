@@ -1,6 +1,6 @@
-===================================
+=================
 oslo.upgradecheck
-===================================
+=================
 
 Common code for writing OpenStack upgrade checks
 
@@ -11,5 +11,5 @@ integrating that code into a project.
 
 * Free software: Apache license
 * Documentation: https://docs.openstack.org/oslo.upgradecheck/latest/
-* Source: https://git.openstack.org/cgit/openstack/oslo.upgradecheck
+* Source: https://opendev.org/openstack/oslo.upgradecheck
 * Bugs: https://bugs.launchpad.net/oslo.upgradecheck

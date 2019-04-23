@@ -1,6 +1,6 @@
-===================
- oslo.upgradecheck
-===================
+=================
+oslo.upgradecheck
+=================
 
 Common code for writing OpenStack upgrade checks.
 
