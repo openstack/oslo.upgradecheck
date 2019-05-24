@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
 import sys
 import textwrap
 import traceback
@@ -23,6 +24,8 @@ import prettytable
 import six
 
 from oslo_upgradecheck._i18n import _
+
+CONF = None
 
 
 class Code(enum.IntEnum):
@@ -92,6 +95,7 @@ class UpgradeCommands(object):
 
         :returns: Code
         """
+        global CONF
         return_code = Code.SUCCESS
         # This is a list if 2-item tuples for the check name and it's results.
         check_results = []
@@ -121,22 +125,36 @@ class UpgradeCommands(object):
         # NOTE(bnemec): We use six.text_type on the translated string to
         # force immediate translation if lazy translation is in use.
         # See lp1801761 for details.
-        t = prettytable.PrettyTable([six.text_type(self.display_title)],
-                                    hrules=prettytable.ALL)
-        t.align = 'l'
-        for name, result in check_results:
-            cell = (
-                _('Check: %(name)s\n'
-                  'Result: %(result)s\n'
-                  'Details: %(details)s') %
-                {
-                    'name': name,
-                    'result': UPGRADE_CHECK_MSG_MAP[result.code],
-                    'details': self._get_details(result),
-                }
-            )
-            t.add_row([cell])
-        print(t)
+
+        # Since registering opts can be overridden by consuming code, we can't
+        # assume that our locally defined option exists.
+        if (hasattr(CONF, 'command') and hasattr(CONF.command, 'json') and
+                CONF.command.json):
+            output = {'name': six.text_type(self.display_title), 'checks': []}
+            for name, result in check_results:
+                output['checks'].append(
+                    {'check': name,
+                     'result': result.code,
+                     'details': result.details}
+                )
+            print(json.dumps(output))
+        else:
+            t = prettytable.PrettyTable([six.text_type(self.display_title)],
+                                        hrules=prettytable.ALL)
+            t.align = 'l'
+            for name, result in check_results:
+                cell = (
+                    _('Check: %(name)s\n'
+                      'Result: %(result)s\n'
+                      'Details: %(details)s') %
+                    {
+                        'name': name,
+                        'result': UPGRADE_CHECK_MSG_MAP[result.code],
+                        'details': self._get_details(result),
+                    }
+                )
+                t.add_row([cell])
+            print(t)
 
         return return_code
 
@@ -154,6 +172,11 @@ def register_cli_options(conf, upgrade_command):
         upgrade_action = subparsers.add_parser('upgrade')
         upgrade_action.add_argument('check')
         upgrade_action.set_defaults(action_fn=upgrade_command.check)
+        upgrade_action.add_argument(
+            '--json',
+            action='store_true',
+            help='Output the results in JSON format. Default is to print '
+                 'results in human readable table format.')
 
     opt = cfg.SubCommandOpt('command', handler=add_parsers)
     conf.register_cli_opt(opt)
@@ -194,6 +217,7 @@ def main(conf, project, upgrade_command,
                                  the search behavior in oslo.config.
 
     """
+    global CONF
     register_cli_options(conf, upgrade_command)
 
     conf(
@@ -201,5 +225,5 @@ def main(conf, project, upgrade_command,
         project=project,
         default_config_files=default_config_files,
     )
-
+    CONF = conf
     return run(conf)
