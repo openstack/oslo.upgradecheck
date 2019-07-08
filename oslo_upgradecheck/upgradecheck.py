@@ -95,7 +95,6 @@ class UpgradeCommands(object):
 
         :returns: Code
         """
-        global CONF
         return_code = Code.SUCCESS
         # This is a list if 2-item tuples for the check name and it's results.
         check_results = []
@@ -107,8 +106,6 @@ class UpgradeCommands(object):
             if result.code > return_code:
                 return_code = result.code
 
-        # TODO(bnemec): Consider using cliff for this so we can output in
-        # different formats like JSON or CSV.
         # We're going to build a summary table that looks like:
         # +----------------------------------------------------+
         # | Upgrade Check Results                              |
@@ -122,14 +119,14 @@ class UpgradeCommands(object):
         # | Details: There is no placement-api endpoint in the |
         # |          service catalog.                          |
         # +----------------------------------------------------+
-        # NOTE(bnemec): We use six.text_type on the translated string to
-        # force immediate translation if lazy translation is in use.
-        # See lp1801761 for details.
 
         # Since registering opts can be overridden by consuming code, we can't
         # assume that our locally defined option exists.
         if (hasattr(CONF, 'command') and hasattr(CONF.command, 'json') and
                 CONF.command.json):
+            # NOTE(bnemec): We use six.text_type on the translated string to
+            # force immediate translation if lazy translation is in use.
+            # See lp1801761 for details.
             output = {'name': six.text_type(self.display_title), 'checks': []}
             for name, result in check_results:
                 output['checks'].append(
@@ -139,6 +136,9 @@ class UpgradeCommands(object):
                 )
             print(json.dumps(output))
         else:
+            # NOTE(bnemec): We use six.text_type on the translated string to
+            # force immediate translation if lazy translation is in use.
+            # See lp1801761 for details.
             t = prettytable.PrettyTable([six.text_type(self.display_title)],
                                         hrules=prettytable.ALL)
             t.align = 'l'
