@@ -7,4 +7,4 @@ oslotest==1.5.1
 stestr==2.0.0
 sphinx==1.6.2
 reno==2.5.0
-openstackdocstheme==1.18.1
+openstackdocstheme==1.20.0
