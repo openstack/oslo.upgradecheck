@@ -15,7 +15,6 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 # General information about the project.
-project = 'oslo.upgradecheck'
 copyright = '2018, Oslo Contributors'
 
 

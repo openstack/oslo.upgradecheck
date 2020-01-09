@@ -8,7 +8,6 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'oslo.upgradecheck'
 copyright = '2018, Oslo Contributors'
 author = 'Oslo Contributors'
 
