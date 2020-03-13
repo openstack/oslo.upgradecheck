@@ -22,8 +22,8 @@ Tests for `upgradecheck` module.
 import os.path
 import subprocess
 import sys
+from unittest import mock
 
-import mock
 from oslo_config import cfg
 from oslotest import base
 
