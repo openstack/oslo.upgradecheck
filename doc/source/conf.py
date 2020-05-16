@@ -43,6 +43,6 @@ html_theme = 'openstackdocs'
 
 # -- Options for openstackdocstheme -------------------------------------------
 
-repository_name = 'openstack/oslo.upgradecheck'
-bug_project = 'oslo.upgradecheck'
-bug_tag = ''
+openstackdocs_repo_name = 'openstack/oslo.upgradecheck'
+openstackdocs_bug_project = 'oslo.upgradecheck'
+openstackdocs_bug_tag = ''
