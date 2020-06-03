@@ -22,6 +22,12 @@ Contents
    usage
    contributing
 
+Release Notes
+=============
+
+Read also the `oslo.upgradecheck Release Notes
+<https://docs.openstack.org/releasenotes/oslo.upgradecheck/>`_.
+
 Indices and tables
 ==================
 
