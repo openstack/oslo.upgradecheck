@@ -99,7 +99,11 @@ class UpgradeCommands(object):
         # This is a list if 2-item tuples for the check name and it's results.
         check_results = []
         for name, func in self._upgrade_checks:
-            result = func(self)
+            if isinstance(func, tuple):
+                func_name, kwargs = func
+                result = func_name(self, **kwargs)
+            else:
+                result = func(self)
             # store the result of the check for the summary table
             check_results.append((name, result))
             # we want to end up with the highest level code of all checks
