@@ -17,6 +17,7 @@ import yaml
 
 from oslo_config import cfg
 from oslo_config import fixture as config
+from oslo_policy import opts as policy_opts
 from oslo_serialization import jsonutils
 from oslotest import base
 
@@ -31,10 +32,8 @@ class TestUpgradeCheckPolicyJSON(base.BaseTestCase):
         conf_fixture = self.useFixture(config.Config())
         conf_fixture.load_raw_values()
         self.conf = conf_fixture.conf
-        policy_file_opt = cfg.StrOpt('policy_file',
-                                     default='policy.json',
-                                     help='policy file')
-        self.conf.register_opt(policy_file_opt, group="oslo_policy")
+        self.conf.register_opts(policy_opts._options,
+                                group=policy_opts._option_group)
 
         self.cmd = upgradecheck.UpgradeCommands()
         self.cmd._upgrade_checks = (('Policy File JSON to YAML Migration',

@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from oslo_policy import opts as policy_opts
 from oslo_utils import fileutils
 
 from oslo_upgradecheck import upgradecheck
@@ -21,6 +22,13 @@ Common checks which can be used by multiple services.
 
 def check_policy_json(self, conf):
     "Checks to see if policy file is JSON-formatted policy file."
+
+    # NOTE(gmann): This method need [oslo_policy].policy_file
+    # config value so register those options in case they
+    # are not register by services.
+    conf.register_opts(policy_opts._options,
+                       group=policy_opts._option_group)
+
     msg = ("Your policy file is JSON-formatted which is "
            "deprecated. You need to switch to YAML-formatted file. "
            "Use the ``oslopolicy-convert-json-to-yaml`` "
