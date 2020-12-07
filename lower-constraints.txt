@@ -2,7 +2,7 @@ oslo.config==5.2.0
 oslo.i18n==3.15.3
 enum34==1.0.4
 PrettyTable==0.7.1
-oslotest==1.5.1
+oslotest==3.5.0
 stestr==2.0.0
 oslo.serialization==2.21.1
 oslo.utils==4.5.0
