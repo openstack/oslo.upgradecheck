@@ -21,7 +21,6 @@ import traceback
 import enum
 from oslo_config import cfg
 import prettytable
-import six
 
 from oslo_upgradecheck._i18n import _
 
@@ -128,10 +127,10 @@ class UpgradeCommands(object):
         # assume that our locally defined option exists.
         if (hasattr(CONF, 'command') and hasattr(CONF.command, 'json') and
                 CONF.command.json):
-            # NOTE(bnemec): We use six.text_type on the translated string to
+            # NOTE(bnemec): We use str on the translated string to
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
-            output = {'name': six.text_type(self.display_title), 'checks': []}
+            output = {'name': str(self.display_title), 'checks': []}
             for name, result in check_results:
                 output['checks'].append(
                     {'check': name,
@@ -140,11 +139,11 @@ class UpgradeCommands(object):
                 )
             print(json.dumps(output))
         else:
-            # NOTE(bnemec): We use six.text_type on the translated string to
+            # NOTE(bnemec): We use str on the translated string to
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
-            t = prettytable.PrettyTable([six.text_type(self.display_title)],
-                                        hrules=prettytable.ALL)
+            t = prettytable.PrettyTable(
+                [str(self.display_title)], hrules=prettytable.ALL)
             t.align = 'l'
             for name, result in check_results:
                 cell = (
