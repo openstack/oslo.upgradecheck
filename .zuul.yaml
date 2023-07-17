@@ -5,4 +5,3 @@
       - check-requirements
       - release-notes-jobs-python3
       - periodic-stable-jobs
-      - openstack-lower-constraints-jobs
