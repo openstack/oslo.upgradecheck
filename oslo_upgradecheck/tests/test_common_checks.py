@@ -28,7 +28,7 @@ from oslo_upgradecheck import upgradecheck
 class TestUpgradeCheckPolicyJSON(base.BaseTestCase):
 
     def setUp(self):
-        super(TestUpgradeCheckPolicyJSON, self).setUp()
+        super().setUp()
         conf_fixture = self.useFixture(config.Config())
         conf_fixture.load_raw_values()
         self.conf = conf_fixture.conf

@@ -50,7 +50,7 @@ UPGRADE_CHECK_MSG_MAP = {
 }
 
 
-class Result(object):
+class Result:
     """Class used for 'nova-status upgrade check' results.
 
     The 'code' attribute is a Code enum.
@@ -60,12 +60,12 @@ class Result(object):
     """
 
     def __init__(self, code, details=None):
-        super(Result, self).__init__()
+        super().__init__()
         self.code = code
         self.details = details
 
 
-class UpgradeCommands(object):
+class UpgradeCommands:
     """Base class for upgrade checks
 
     This class should be inherited by a class in each project that provides
