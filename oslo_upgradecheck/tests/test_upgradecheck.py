@@ -22,8 +22,8 @@ import subprocess
 import sys
 from unittest import mock
 
-from oslo_config import cfg
-from oslotest import base
+from oslo_config import cfg  # type: ignore
+from oslotest import base  # type: ignore
 
 from oslo_upgradecheck import upgradecheck
 
@@ -54,8 +54,13 @@ class TestCommands(upgradecheck.UpgradeCommands):
     )
 
 
-class SuccessCommands(TestCommands):
-    _upgrade_checks = ()
+class SuccessCommands(upgradecheck.UpgradeCommands):
+    def success(self):
+        return upgradecheck.Result(
+            upgradecheck.Code.SUCCESS, 'Always succeeds'
+        )
+
+    _upgrade_checks = (('always succeeds', success),)
 
 
 class TestUpgradeCommands(base.BaseTestCase):

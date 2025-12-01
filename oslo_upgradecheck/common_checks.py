@@ -10,7 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from oslo_policy import opts as policy_opts
+from oslo_config import cfg  # type: ignore
+from oslo_policy import opts as policy_opts  # type: ignore
 from oslo_utils import fileutils
 
 from oslo_upgradecheck import upgradecheck
@@ -20,7 +21,9 @@ Common checks which can be used by multiple services.
 """
 
 
-def check_policy_json(self, conf):
+def check_policy_json(
+    self: upgradecheck.UpgradeCommands, conf: cfg.ConfigOpts
+) -> upgradecheck.Result:
     "Checks to see if policy file is JSON-formatted policy file."
 
     # NOTE(gmann): This method need [oslo_policy].policy_file

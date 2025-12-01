@@ -13,18 +13,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from collections.abc import Callable, Iterable
 import json
 import sys
 import textwrap
 import traceback
+from typing import Any, TypedDict
 
 import enum
-from oslo_config import cfg
+from oslo_config import cfg  # type: ignore
 import prettytable
 
 from oslo_upgradecheck._i18n import _
 
-CONF = None
+CONF: cfg.ConfigOpts | None = None
 
 
 class Code(enum.IntEnum):
@@ -59,10 +61,21 @@ class Result:
     information on what issue was discovered along with any remediation.
     """
 
-    def __init__(self, code, details=None):
+    def __init__(self, code: Code, details: str | None = None) -> None:
         super().__init__()
         self.code = code
         self.details = details
+
+
+class _OutputCheck(TypedDict):
+    check: str
+    result: Code
+    details: str | None
+
+
+class _Output(TypedDict):
+    name: str
+    checks: list[_OutputCheck]
 
 
 class UpgradeCommands:
@@ -79,18 +92,27 @@ class UpgradeCommands:
     """
 
     display_title = _('Upgrade Check Results')
-    _upgrade_checks = ()
+    _upgrade_checks: tuple[
+        tuple[
+            str,
+            Callable[..., Result]
+            | tuple[Callable[..., Result], dict[str, Any]],
+        ],
+        ...,
+    ] = ()
 
-    def _get_details(self, upgrade_check_result):
-        if upgrade_check_result.details is not None:
-            # wrap the text on the details to 60 characters
-            return '\n'.join(
-                textwrap.wrap(
-                    upgrade_check_result.details, 60, subsequent_indent='  '
-                )
+    def _get_details(self, upgrade_check_result: Result) -> str | None:
+        if upgrade_check_result.details is None:
+            return None
+
+        # wrap the text on the details to 60 characters
+        return '\n'.join(
+            textwrap.wrap(
+                upgrade_check_result.details, 60, subsequent_indent='  '
             )
+        )
 
-    def check(self):
+    def check(self) -> Code:
         """Performs checks to see if the deployment is ready for upgrade.
 
         These checks are expected to be run BEFORE services are restarted with
@@ -130,14 +152,15 @@ class UpgradeCommands:
         # Since registering opts can be overridden by consuming code, we can't
         # assume that our locally defined option exists.
         if (
-            hasattr(CONF, 'command')
+            CONF is not None
+            and hasattr(CONF, 'command')
             and hasattr(CONF.command, 'json')
             and CONF.command.json
         ):
             # NOTE(bnemec): We use str on the translated string to
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
-            output = {'name': str(self.display_title), 'checks': []}
+            output: _Output = {'name': str(self.display_title), 'checks': []}
             for name, result in check_results:
                 output['checks'].append(
                     {
@@ -169,7 +192,9 @@ class UpgradeCommands:
         return return_code
 
 
-def register_cli_options(conf, upgrade_command):
+def register_cli_options(
+    conf: cfg.ConfigOpts, upgrade_command: UpgradeCommands
+) -> None:
     """Set up the command line options.
 
     Adds a subcommand to support 'upgrade check' on the command line.
@@ -179,7 +204,7 @@ def register_cli_options(conf, upgrade_command):
     :param upgrade_command: The UpgradeCommands instance.
     """
 
-    def add_parsers(subparsers):
+    def add_parsers(subparsers: Any) -> None:
         upgrade_action = subparsers.add_parser('upgrade')
         upgrade_action.add_argument('check')
         upgrade_action.set_defaults(action_fn=upgrade_command.check)
@@ -194,14 +219,14 @@ def register_cli_options(conf, upgrade_command):
     conf.register_cli_opt(opt)
 
 
-def run(conf):
+def run(conf: cfg.ConfigOpts) -> int:
     """Run the requested command.
 
     :param conf: An oslo.confg ConfigOpts instance on which the upgrade
                  commands have been previously registered.
     """
     try:
-        return conf.command.action_fn()
+        return conf.command.action_fn()  # type: ignore
     except Exception:
         print(_('Error:\n%s') % traceback.format_exc())
         # This is 255 so it's not confused with the upgrade check exit codes.
@@ -209,12 +234,12 @@ def run(conf):
 
 
 def main(
-    conf,
-    project,
-    upgrade_command,
-    argv=sys.argv[1:],
-    default_config_files=None,
-):
+    conf: cfg.ConfigOpts,
+    project: str,
+    upgrade_command: UpgradeCommands,
+    argv: list[str] = sys.argv[1:],
+    default_config_files: Iterable[str] | None = None,
+) -> int:
     """Simple implementation of main for upgrade checks
 
     This can be used in upgrade check commands to provide the minimum
