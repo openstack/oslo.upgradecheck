@@ -26,16 +26,17 @@ def check_policy_json(self, conf):
     # NOTE(gmann): This method need [oslo_policy].policy_file
     # config value so register those options in case they
     # are not register by services.
-    conf.register_opts(policy_opts._options,
-                       group=policy_opts._option_group)
+    conf.register_opts(policy_opts._options, group=policy_opts._option_group)
 
-    msg = ("Your policy file is JSON-formatted which is "
-           "deprecated. You need to switch to YAML-formatted file. "
-           "Use the ``oslopolicy-convert-json-to-yaml`` "
-           "tool to convert the existing JSON-formatted files to "
-           "YAML in a backwards-compatible manner: "
-           "https://docs.openstack.org/oslo.policy/"
-           "latest/cli/oslopolicy-convert-json-to-yaml.html.")
+    msg = (
+        "Your policy file is JSON-formatted which is "
+        "deprecated. You need to switch to YAML-formatted file. "
+        "Use the ``oslopolicy-convert-json-to-yaml`` "
+        "tool to convert the existing JSON-formatted files to "
+        "YAML in a backwards-compatible manner: "
+        "https://docs.openstack.org/oslo.policy/"
+        "latest/cli/oslopolicy-convert-json-to-yaml.html."
+    )
     status = upgradecheck.Result(upgradecheck.Code.SUCCESS)
     # Check if policy file exist and is JSON-formatted.
     policy_path = conf.find_file(conf.oslo_policy.policy_file)

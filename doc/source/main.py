@@ -22,22 +22,19 @@ from oslo_upgradecheck import upgradecheck
 
 class Checks(upgradecheck.UpgradeCommands):
     def success(self):
-        return upgradecheck.Result(upgradecheck.Code.SUCCESS,
-                                   'Always succeeds')
+        return upgradecheck.Result(
+            upgradecheck.Code.SUCCESS, 'Always succeeds'
+        )
 
     def failure(self):
         return upgradecheck.Result(upgradecheck.Code.FAILURE, 'Always fails')
 
-    _upgrade_checks = (('always succeeds', success),
-                       ('always fails', failure),
-                       )
+    _upgrade_checks = (('always succeeds', success), ('always fails', failure))
 
 
 def main():
     return upgradecheck.main(
-        conf=cfg.CONF,
-        project='myprojectname',
-        upgrade_command=Checks(),
+        conf=cfg.CONF, project='myprojectname', upgrade_command=Checks()
     )
 
 

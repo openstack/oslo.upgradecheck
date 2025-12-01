@@ -29,7 +29,6 @@ from oslo_upgradecheck import upgradecheck
 
 
 class TestUpgradeCheckResult(base.BaseTestCase):
-
     def test_details(self):
         result = upgradecheck.Result(upgradecheck.Code.SUCCESS, 'test details')
         self.assertEqual(0, result.code)
@@ -38,8 +37,9 @@ class TestUpgradeCheckResult(base.BaseTestCase):
 
 class TestCommands(upgradecheck.UpgradeCommands):
     def success(self):
-        return upgradecheck.Result(upgradecheck.Code.SUCCESS,
-                                   'Always succeeds')
+        return upgradecheck.Result(
+            upgradecheck.Code.SUCCESS, 'Always succeeds'
+        )
 
     def warning(self):
         return upgradecheck.Result(upgradecheck.Code.WARNING, 'Always warns')
@@ -47,10 +47,11 @@ class TestCommands(upgradecheck.UpgradeCommands):
     def failure(self):
         return upgradecheck.Result(upgradecheck.Code.FAILURE, 'Always fails')
 
-    _upgrade_checks = (('always succeeds', success),
-                       ('always warns', warning),
-                       ('always fails', failure),
-                       )
+    _upgrade_checks = (
+        ('always succeeds', success),
+        ('always warns', warning),
+        ('always fails', failure),
+    )
 
 
 class SuccessCommands(TestCommands):
@@ -98,10 +99,13 @@ class TestMain(base.BaseTestCase):
 
 class TestExampleFile(base.BaseTestCase):
     def test_example_main(self):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            '../../doc/source/main.py')
+        path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            '../../doc/source/main.py',
+        )
         # The example includes both a passing and failing test, which means the
         # overall result is failure.
         self.assertEqual(
             upgradecheck.Code.FAILURE,
-            subprocess.call([sys.executable, path, 'upgrade', 'check']))
+            subprocess.call([sys.executable, path, 'upgrade', 'check']),
+        )

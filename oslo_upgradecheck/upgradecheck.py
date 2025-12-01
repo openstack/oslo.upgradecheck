@@ -77,14 +77,18 @@ class UpgradeCommands:
     done through the sqlalchemy query language directly like the database
     schema migrations.
     """
+
     display_title = _('Upgrade Check Results')
     _upgrade_checks = ()
 
     def _get_details(self, upgrade_check_result):
         if upgrade_check_result.details is not None:
             # wrap the text on the details to 60 characters
-            return '\n'.join(textwrap.wrap(upgrade_check_result.details, 60,
-                                           subsequent_indent='  '))
+            return '\n'.join(
+                textwrap.wrap(
+                    upgrade_check_result.details, 60, subsequent_indent='  '
+                )
+            )
 
     def check(self):
         """Performs checks to see if the deployment is ready for upgrade.
@@ -125,17 +129,22 @@ class UpgradeCommands:
 
         # Since registering opts can be overridden by consuming code, we can't
         # assume that our locally defined option exists.
-        if (hasattr(CONF, 'command') and hasattr(CONF.command, 'json') and
-                CONF.command.json):
+        if (
+            hasattr(CONF, 'command')
+            and hasattr(CONF.command, 'json')
+            and CONF.command.json
+        ):
             # NOTE(bnemec): We use str on the translated string to
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
             output = {'name': str(self.display_title), 'checks': []}
             for name, result in check_results:
                 output['checks'].append(
-                    {'check': name,
-                     'result': result.code,
-                     'details': result.details}
+                    {
+                        'check': name,
+                        'result': result.code,
+                        'details': result.details,
+                    }
                 )
             print(json.dumps(output))
         else:
@@ -143,19 +152,17 @@ class UpgradeCommands:
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
             t = prettytable.PrettyTable(
-                [str(self.display_title)], hrules=prettytable.ALL)
+                [str(self.display_title)], hrules=prettytable.ALL
+            )
             t.align = 'l'
             for name, result in check_results:
-                cell = (
-                    _('Check: %(name)s\n'
-                      'Result: %(result)s\n'
-                      'Details: %(details)s') %
-                    {
-                        'name': name,
-                        'result': UPGRADE_CHECK_MSG_MAP[result.code],
-                        'details': self._get_details(result),
-                    }
-                )
+                cell = _(
+                    'Check: %(name)s\nResult: %(result)s\nDetails: %(details)s'
+                ) % {
+                    'name': name,
+                    'result': UPGRADE_CHECK_MSG_MAP[result.code],
+                    'details': self._get_details(result),
+                }
                 t.add_row([cell])
             print(t)
 
@@ -171,6 +178,7 @@ def register_cli_options(conf, upgrade_command):
                  upgrade check arguments.
     :param upgrade_command: The UpgradeCommands instance.
     """
+
     def add_parsers(subparsers):
         upgrade_action = subparsers.add_parser('upgrade')
         upgrade_action.add_argument('check')
@@ -179,7 +187,8 @@ def register_cli_options(conf, upgrade_command):
             '--json',
             action='store_true',
             help='Output the results in JSON format. Default is to print '
-                 'results in human readable table format.')
+            'results in human readable table format.',
+        )
 
     opt = cfg.SubCommandOpt('command', handler=add_parsers)
     conf.register_cli_opt(opt)
@@ -199,9 +208,13 @@ def run(conf):
         return 255
 
 
-def main(conf, project, upgrade_command,
-         argv=sys.argv[1:],
-         default_config_files=None):
+def main(
+    conf,
+    project,
+    upgrade_command,
+    argv=sys.argv[1:],
+    default_config_files=None,
+):
     """Simple implementation of main for upgrade checks
 
     This can be used in upgrade check commands to provide the minimum
@@ -223,10 +236,6 @@ def main(conf, project, upgrade_command,
     global CONF
     register_cli_options(conf, upgrade_command)
 
-    conf(
-        args=argv,
-        project=project,
-        default_config_files=default_config_files,
-    )
+    conf(args=argv, project=project, default_config_files=default_config_files)
     CONF = conf
     return run(conf)
