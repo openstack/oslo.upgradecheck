@@ -15,11 +15,11 @@ import os.path
 import tempfile
 import yaml
 
-from oslo_config import cfg
+from oslo_config import cfg  # type: ignore
 from oslo_config import fixture as config
-from oslo_policy import opts as policy_opts
-from oslo_serialization import jsonutils
-from oslotest import base
+from oslo_policy import opts as policy_opts  # type: ignore
+from oslo_serialization import jsonutils  # type: ignore
+from oslotest import base  # type: ignore
 
 from oslo_upgradecheck import common_checks
 from oslo_upgradecheck import upgradecheck
