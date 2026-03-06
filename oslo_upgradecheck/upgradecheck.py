@@ -21,7 +21,7 @@ import traceback
 from typing import Any, TypedDict
 
 import enum
-from oslo_config import cfg  # type: ignore
+from oslo_config import cfg
 import prettytable
 
 from oslo_upgradecheck._i18n import _

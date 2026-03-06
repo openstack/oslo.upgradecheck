@@ -10,8 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from oslo_config import cfg  # type: ignore
-from oslo_policy import opts as policy_opts  # type: ignore
+from oslo_config import cfg
+from oslo_policy import opts as policy_opts
 from oslo_utils import fileutils
 
 from oslo_upgradecheck import upgradecheck
