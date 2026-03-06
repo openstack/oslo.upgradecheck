@@ -22,8 +22,8 @@ import subprocess
 import sys
 from unittest import mock
 
-from oslo_config import cfg  # type: ignore
-from oslotest import base  # type: ignore
+from oslo_config import cfg
+from oslotest import base
 
 from oslo_upgradecheck import upgradecheck
 
