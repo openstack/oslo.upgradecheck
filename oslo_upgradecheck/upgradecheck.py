@@ -175,7 +175,7 @@ class UpgradeCommands:
             # force immediate translation if lazy translation is in use.
             # See lp1801761 for details.
             t = prettytable.PrettyTable(
-                [str(self.display_title)], hrules=prettytable.ALL
+                [str(self.display_title)], hrules=prettytable.HRuleStyle.ALL
             )
             t.align = 'l'
             for name, result in check_results:
