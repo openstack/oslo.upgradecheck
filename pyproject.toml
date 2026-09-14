@@ -31,7 +31,7 @@ Homepage = "https://docs.openstack.org/oslo.upgradecheck"
 Repository = "https://opendev.org/openstack/oslo.upgradecheck"
 
 [tool.setuptools.packages.find]
-include = ["oslo_upgradecheck"]
+include = ["oslo_upgradecheck*"]
 
 [tool.mypy]
 python_version = "3.11"
